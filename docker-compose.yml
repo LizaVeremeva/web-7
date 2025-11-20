@@ -1,7 +1,7 @@
 services:
   nginx:
     image: nginx:alpine
-    container_name: lab6_nginx
+    container_name: lab7_nginx
     ports:
       - "8080:80"
     volumes:
@@ -12,36 +12,41 @@ services:
 
   php:
     build: .
-    container_name: lab6_php
+    container_name: lab7_php
     volumes:
       - ./www:/var/www/html
     depends_on:
       - redis
       - elasticsearch
       - clickhouse
+      - rabbitmq  # ← ДОБАВИТЬ эту строку
 
   redis:
     image: redis:7
-    container_name: lab6_redis
+    container_name: lab7_redis
     ports:
       - "6379:6379"
 
   elasticsearch:
     image: elasticsearch:7.17.10
-    container_name: lab6_elastic
+    container_name: lab7_elastic
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
       - "9200:9200"
 
   clickhouse:
     image: clickhouse/clickhouse-server:24
-    container_name: lab6_clickhouse
+    container_name: lab7_clickhouse
     ports:
       - "8123:8123"
       - "9000:9000"
 
-volumes:
-  redis_data:
-  ch_data:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: lab7_rabbit
+    ports:
+      - "5672:5672"   # порт для PHP
+      - "15672:15672" # порт для веб-интерфейса
