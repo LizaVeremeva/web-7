@@ -57,7 +57,7 @@ try {
         'timestamp' => date('Y-m-d H:i:s')
     ];
     
-    $queueManager->publish($queueData);
+    $queueManager->publishToMain($queueData);  // ← ИЗМЕНИЛИ на publishToMain
     
     // Сохраняем в сессию для немедленного показа
     $_SESSION['last_booking'] = [
